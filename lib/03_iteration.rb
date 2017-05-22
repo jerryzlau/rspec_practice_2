@@ -4,6 +4,7 @@
 # factors of a given number.
 
 def factors(num)
+  (1..num).select {|n| num%n == 0}
 end
 
 # ### Bubble Sort
@@ -47,9 +48,34 @@ end
 
 class Array
   def bubble_sort!
+    current_pos = 0
+    next_pos = 1
+
+    self.length.times {
+      (current_pos..self.length-1).each do |num1|
+        (next_pos..self.length-1).each do |num2|
+          if block_given?
+            if yield(self[num1],self[num2]) == 1
+              self[current_pos], self[next_pos] = self[next_pos], self[current_pos]
+            end
+          else
+            if (self[num1] <=> self[num2]) == 1
+              self[current_pos], self[next_pos] = self[next_pos], self[current_pos]
+            end
+          end
+        end
+        current_pos += 1
+        next_pos += 1
+      end
+
+      current_pos = 0
+      next_pos = 1
+    }
+    self
   end
 
   def bubble_sort(&prc)
+    self.dup.bubble_sort!(&prc)
   end
 end
 
@@ -67,9 +93,23 @@ end
 # words).
 
 def substrings(string)
+  combo = []
+  start_char = 0
+  char_range = 0
+
+  (start_char..string.length-1).each do |start|
+    (char_range..string.length-1).each do |range|
+      combo << string[start..range]
+    end
+    start_char += 1
+    char_range += 1
+  end
+
+  combo
 end
 
 def subwords(word, dictionary)
+  dictionary.select {|dict| substrings(word).include?(dict)}
 end
 
 # ### Doubler
@@ -77,6 +117,7 @@ end
 # array with the original elements multiplied by two.
 
 def doubler(array)
+  array.map {|num| num*2}
 end
 
 # ### My Each
@@ -104,6 +145,8 @@ end
 
 class Array
   def my_each(&prc)
+    self.length.times {|el| yield(self[el])}
+    self
   end
 end
 
@@ -122,12 +165,26 @@ end
 
 class Array
   def my_map(&prc)
+    answer = []
+
+    self.my_each {|el| answer << yield(el)}
+    answer
   end
 
   def my_select(&prc)
+    answer = []
+
+    self.my_each {|el| answer << el if yield(el)}
+    answer
   end
 
   def my_inject(&blk)
+    current = self.shift
+
+    self.my_each do |el|
+      current = yield(current,el)
+    end
+    current
   end
 end
 
@@ -141,4 +198,5 @@ end
 # ```
 
 def concatenate(strings)
+  strings.inject {|first,rest| first + rest}
 end

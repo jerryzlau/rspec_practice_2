@@ -46,5 +46,5 @@
 # # => "NO BLOCK GIVEN"
 # ```
 def eval_block(*args)
-  yield(args)
+  yield(*args)
 end
