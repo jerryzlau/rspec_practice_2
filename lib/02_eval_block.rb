@@ -45,3 +45,6 @@
 # eval_block(1, 2, 3)
 # # => "NO BLOCK GIVEN"
 # ```
+def eval_block(*args)
+  yield(args)
+end
