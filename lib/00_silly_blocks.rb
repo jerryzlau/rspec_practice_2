@@ -9,10 +9,3 @@ end
 def repeater(num=0)
   return yield if num==0; num.times { |n| yield}
 end
-
-
-result = reverser do
-  "hello asdjkhasd"
-end
-
-p result
